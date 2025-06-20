@@ -129,7 +129,7 @@ class DashboardController extends AbstractController
     #[Route('/telecharger/devoir', name: 'download_devoir')]
     public function downloadDevoir(): BinaryFileResponse
     {
-        $path = $this->getParameter('kernel.project_dir').'/TP _ Devoir DITI4 30_01_2025.pdf';
-        return $this->file($path, 'TP_Devoir_DITI4_30_01_2025.pdf', ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        $path = $this->getParameter('kernel.project_dir').'/TP _ Devoir DITI4 14_06_2025 (version corrigée du 30_01_2025).pdf';
+        return $this->file($path, 'TP_Devoir_DITI4_14_06_2025.pdf', ResponseHeaderBag::DISPOSITION_ATTACHMENT);
     }
 }

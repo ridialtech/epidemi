@@ -9,13 +9,13 @@ security:
                 users:
                     admin@gmail.com:
                         password: '$2b$12$/UzoPDE0Aoiz4HIUIPZsZu7KxVs3DCwpb.PQp9hTvCFmrM4LY4CBu'
-                        roles: ['ROLE_ADMIN']
+                        roles: ['ROLE_ADMIN', 'ROLE_USER']
                     user@gmail.com:
                         password: '$2b$12$/UzoPDE0Aoiz4HIUIPZsZu7KxVs3DCwpb.PQp9hTvCFmrM4LY4CBu'
                         roles: ['ROLE_USER']
                     agent@gmail.com:
                         password: '$2b$12$/UzoPDE0Aoiz4HIUIPZsZu7KxVs3DCwpb.PQp9hTvCFmrM4LY4CBu'
-                        roles: ['ROLE_AGENT']
+                        roles: ['ROLE_AGENT', 'ROLE_USER']
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
