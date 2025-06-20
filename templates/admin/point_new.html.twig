@@ -1,0 +1,34 @@
+{% extends 'admin/base.html.twig' %}
+{% block title %}Ajouter un point de surveillance{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Ajouter un point de surveillance</h6>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{{ path('point_new') }}">
+                    <div class="form-group">
+                        <label for="psNom">Nom du point</label>
+                        <input type="text" class="form-control" id="psNom" name="name" placeholder="Entrer le nom">
+                    </div>
+                    <div class="form-group">
+                        <label for="psZone">Zone</label>
+                        <select class="form-control" id="psZone" name="zone">
+   
+                            {% for zone in zones %}
+                                <option value="{{ zone.id }}">{{ zone.name }}</option>
+                            {% else %}
+                                <option disabled>Aucune zone</option>
+                            {% endfor %}
+
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'admin/base.html.twig' %}
+{% block title %}Liste des pays{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Liste des pays</h6>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                {% for country in countries %}
+                    <li class="list-group-item">{{ country.name }}</li>
+                {% else %}
+                    <li class="list-group-item">Aucun pays</li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

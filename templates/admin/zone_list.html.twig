@@ -1,0 +1,51 @@
+{% extends 'admin/base.html.twig' %}
+{% block title %}Liste des zones{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Liste des zones</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Pays</th>
+                                <th>Zone</th>
+                                <th>Statut</th>
+                                <th>Habitants</th>
+                                <th>Symptomatiques</th>
+                                <th>Confirmés</th>
+                                <th>Point de surveillance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            {% for zone in zones %}
+                                <tr class="{% if zone.status == 'rouge' %}table-danger{% elseif zone.status == 'orange' %}table-warning{% endif %}">
+                                    <td>{{ zone.country.name }}</td>
+                                    <td>{{ zone.name }}</td>
+                                    <td>{{ zone.status }}</td>
+                                    <td>{{ zone.population }}</td>
+                                    <td>{{ zone.symptomatic }}</td>
+                                    <td>{{ zone.positive }}</td>
+                                    <td>
+                                        {% for point in zone.points %}
+                                            {{ point.name }}{% if not loop.last %}, {% endif %}
+                                        {% else %} - {% endfor %}
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr><td colspan="7">Aucune zone</td></tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
