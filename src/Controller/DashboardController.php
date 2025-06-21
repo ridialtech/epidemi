@@ -44,6 +44,7 @@ class DashboardController extends AbstractController
         'Ziguinchor', 'Bignona', 'Oussouye'
     ];
     #[Route('/dashboard', name: 'dashboard')]
+
     public function index(): Response
     {
         return $this->render('admin/dashboard.html.twig');
@@ -275,6 +276,7 @@ class DashboardController extends AbstractController
                 'population' => $zone->getPopulation(),
                 'symptomatic' => $zone->getSymptomatic(),
                 'positive' => $zone->getPositive(),
+
             ];
         }
 
