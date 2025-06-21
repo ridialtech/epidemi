@@ -43,7 +43,8 @@ class DashboardController extends AbstractController
         'Sédhiou', 'Bounkiling', 'Goudomp',
         'Ziguinchor', 'Bignona', 'Oussouye'
     ];
-    #[Route('/', name: 'dashboard')]
+    #[Route('/dashboard', name: 'dashboard')]
+
     public function index(): Response
     {
         return $this->render('admin/dashboard.html.twig');
