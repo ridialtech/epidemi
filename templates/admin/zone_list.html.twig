@@ -19,6 +19,7 @@
                                 <th>Symptomatiques</th>
                                 <th>Confirmés</th>
                                 <th>Point de surveillance</th>
+                                {% if is_granted('ROLE_AGENT') %}<th>Actions</th>{% endif %}
                             </tr>
                         </thead>
                         <tbody>
@@ -36,9 +37,17 @@
                                             {{ point.name }}{% if not loop.last %}, {% endif %}
                                         {% else %} - {% endfor %}
                                     </td>
+                                    {% if is_granted('ROLE_AGENT') %}
+                                        <td>
+                                            <a href="{{ path('zone_edit', {id: zone.id}) }}" class="btn btn-sm btn-primary">Modifier</a>
+                                            <form method="post" action="{{ path('zone_delete', {id: zone.id}) }}" class="d-inline" onsubmit="return confirm('Supprimer cette zone ?');">
+                                                <button class="btn btn-sm btn-danger">Supprimer</button>
+                                            </form>
+                                        </td>
+                                    {% endif %}
                                 </tr>
                             {% else %}
-                                <tr><td colspan="7">Aucune zone</td></tr>
+                                <tr><td colspan="{{ is_granted('ROLE_AGENT') ? 8 : 7 }}">Aucune zone</td></tr>
                             {% endfor %}
 
                         </tbody>

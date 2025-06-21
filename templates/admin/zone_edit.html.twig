@@ -1,46 +1,40 @@
 {% extends 'admin/base.html.twig' %}
-{% block title %}Ajouter une zone{% endblock %}
+{% block title %}Modifier une zone{% endblock %}
 {% block content %}
 <div class="row">
     <div class="col-lg-6">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Ajouter une zone</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Modifier une zone</h6>
             </div>
             <div class="card-body">
-                <form method="post" action="{{ path('zone_new') }}">
+                <form method="post" action="{{ path('zone_edit', {id: zone.id}) }}">
                     <div class="form-group">
                         <label for="zoneNom">Nom de la zone</label>
-                        <input type="text" class="form-control" id="zoneNom" name="name" placeholder="Entrer le nom">
+                        <input type="text" class="form-control" id="zoneNom" name="name" value="{{ zone.name }}">
                     </div>
                     <div class="form-group">
                         <label for="zonePays">Pays</label>
                         <select class="form-control" id="zonePays" name="country">
-
                             {% for country in countries %}
-                                <option value="{{ country.id }}">{{ country.name }}</option>
-                            {% else %}
-                                <option disabled>Aucun pays</option>
+                                <option value="{{ country.id }}" {% if zone.country.id == country.id %}selected{% endif %}>{{ country.name }}</option>
                             {% endfor %}
-
                         </select>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-4">
                             <label for="zoneHabitants">Habitants</label>
-                            <input type="number" class="form-control" id="zoneHabitants" name="population">
+                            <input type="number" class="form-control" id="zoneHabitants" name="population" value="{{ zone.population }}">
                         </div>
                         <div class="form-group col-md-4">
                             <label for="zoneSympto">Symptomatiques</label>
-                            <input type="number" class="form-control" id="zoneSympto" name="symptomatic">
+                            <input type="number" class="form-control" id="zoneSympto" name="symptomatic" value="{{ zone.symptomatic }}">
                         </div>
                         <div class="form-group col-md-4">
                             <label for="zonePositifs">Cas confirmés</label>
-                            <input type="number" class="form-control" id="zonePositifs" name="positive">
-
+                            <input type="number" class="form-control" id="zonePositifs" name="positive" value="{{ zone.positive }}">
                         </div>
                     </div>
-                    {# Le statut est calculé automatiquement #}
                     <button type="submit" class="btn btn-primary">Enregistrer</button>
                 </form>
             </div>

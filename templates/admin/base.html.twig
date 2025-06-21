@@ -34,7 +34,9 @@
                 </a>
                 <div id="collapseCountry" class="collapse" aria-labelledby="headingCountry" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{{ path('country_new') }}">Ajout pays</a>
+                        {% if is_granted('ROLE_AGENT') %}
+                            <a class="collapse-item" href="{{ path('country_new') }}">Ajout pays</a>
+                        {% endif %}
                         <a class="collapse-item" href="{{ path('country_list') }}">Liste pays</a>
                     </div>
                 </div>
@@ -46,7 +48,9 @@
                 </a>
                 <div id="collapseZone" class="collapse" aria-labelledby="headingZone" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{{ path('zone_new') }}">Ajout zone</a>
+                        {% if is_granted('ROLE_AGENT') %}
+                            <a class="collapse-item" href="{{ path('zone_new') }}">Ajout zone</a>
+                        {% endif %}
                         <a class="collapse-item" href="{{ path('zone_list') }}">Liste zones</a>
                     </div>
                 </div>
@@ -58,7 +62,9 @@
                 </a>
                 <div id="collapsePoint" class="collapse" aria-labelledby="headingPoint" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="{{ path('point_new') }}">Ajout point</a>
+                        {% if is_granted('ROLE_AGENT') %}
+                            <a class="collapse-item" href="{{ path('point_new') }}">Ajout point</a>
+                        {% endif %}
                         <a class="collapse-item" href="{{ path('point_list') }}">Liste points</a>
                     </div>
                 </div>
@@ -71,9 +77,9 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ path('download_devoir') }}">
-                    <i class="fas fa-fw fa-download"></i>
-                    <span>Télécharger le devoir</span>
+                <a class="nav-link" href="{{ path('view_map') }}">
+                    <i class="fas fa-fw fa-map"></i>
+                    <span>Visualiser la carte</span>
                 </a>
             </li>
 
