@@ -133,7 +133,11 @@ class DashboardController extends AbstractController
     #[Route('/carte', name: 'view_map')]
     public function viewMap(): Response
     {
-        return $this->render('admin/view_map.html.twig');
+        $apiKey = $this->getParameter('google_maps_api_key');
+        return $this->render('admin/view_map.html.twig', [
+            'apiKey' => $apiKey,
+        ]);
+
     }
 
     private function calculateStatus(int $population, int $symptomatic, int $positive): string
@@ -153,6 +157,5 @@ class DashboardController extends AbstractController
         }
 
         return 'verte';
-
     }
 }
