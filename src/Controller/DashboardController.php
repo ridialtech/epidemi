@@ -132,6 +132,7 @@ class DashboardController extends AbstractController
 
     #[Route('/carte', name: 'view_map')]
     public function viewMap(ZoneRepository $repo, SurveillancePointRepository $points): Response
+
     {
         $apiKey = $this->getParameter('google_maps_api_key');
 
@@ -156,6 +157,7 @@ class DashboardController extends AbstractController
             'zones' => $zones,
             'points' => $pts,
         ]);
+
     }
 
     private function calculateStatus(int $population, int $symptomatic, int $positive): string
