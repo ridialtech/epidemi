@@ -153,5 +153,6 @@ class DashboardController extends AbstractController
         }
 
         return 'verte';
+
     }
 }
