@@ -14,6 +14,7 @@ use App\Repository\ZoneRepository;
 use App\Repository\SurveillancePointRepository;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Bundle\SecurityBundle\Attribute\IsGranted;
 
 
 class DashboardController extends AbstractController
@@ -25,6 +26,7 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/pays/nouveau', name: 'country_new', methods: ['GET','POST'])]
+    #[IsGranted('ROLE_AGENT')]
     public function newCountry(Request $request, EntityManagerInterface $em): Response
     {
         if ($request->isMethod('POST')) {
@@ -50,6 +52,7 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/zone/nouvelle', name: 'zone_new', methods: ['GET','POST'])]
+    #[IsGranted('ROLE_AGENT')]
     public function newZone(Request $request, EntityManagerInterface $em, CountryRepository $countries): Response
     {
         if ($request->isMethod('POST')) {
@@ -81,6 +84,7 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/point/nouveau', name: 'point_new', methods: ['GET','POST'])]
+    #[IsGranted('ROLE_AGENT')]
     public function newPoint(Request $request, EntityManagerInterface $em, ZoneRepository $zones): Response
     {
         if ($request->isMethod('POST')) {
@@ -132,7 +136,6 @@ class DashboardController extends AbstractController
 
     #[Route('/carte', name: 'view_map')]
     public function viewMap(ZoneRepository $repo, SurveillancePointRepository $points): Response
-
     {
         $apiKey = $this->getParameter('google_maps_api_key');
 
@@ -157,7 +160,6 @@ class DashboardController extends AbstractController
             'zones' => $zones,
             'points' => $pts,
         ]);
-
     }
 
     private function calculateStatus(int $population, int $symptomatic, int $positive): string
