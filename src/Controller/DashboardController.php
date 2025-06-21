@@ -147,6 +147,8 @@ class DashboardController extends AbstractController
             'apiKey' => $apiKey,
             'zones' => $zones,
         ]);
+
+
     }
 
     private function calculateStatus(int $population, int $symptomatic, int $positive): string
