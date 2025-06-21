@@ -1,0 +1,28 @@
+{% extends 'admin/base.html.twig' %}
+{% block title %}Carte du Sénégal{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-VV5dxyXZMEgH5Ig9WVG/eTdQpwNEmhhc4lqL9XHn0P4="
+          crossorigin=""/>
+{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4 text-gray-800">Carte du Sénégal</h1>
+<div id="map" style="height: 500px;"></div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-o9N1j7kS+ZE/YqGqQ2FZZ4N/x9Nc9rChSxUdDfv10E8="
+            crossorigin=""></script>
+    <script>
+        var map = L.map('map').setView([14.5, -14.5], 6);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+    </script>
+{% endblock %}
