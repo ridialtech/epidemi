@@ -61,10 +61,13 @@ class DashboardController extends AbstractController
                     $zone = new Zone();
                     $zone->setName($name);
                     $zone->setCountry($country);
-                    $zone->setPopulation((int)$request->request->get('population', 0));
-                    $zone->setSymptomatic((int)$request->request->get('symptomatic', 0));
-                    $zone->setPositive((int)$request->request->get('positive', 0));
-                    $zone->setStatus($request->request->get('status'));
+                    $population = (int)$request->request->get('population', 0);
+                    $symptomatic = (int)$request->request->get('symptomatic', 0);
+                    $positive = (int)$request->request->get('positive', 0);
+                    $zone->setPopulation($population);
+                    $zone->setSymptomatic($symptomatic);
+                    $zone->setPositive($positive);
+                    $zone->setStatus($this->calculateStatus($population, $symptomatic, $positive));
                     $em->persist($zone);
                     $em->flush();
                     return $this->redirectToRoute('zone_list');
@@ -122,14 +125,36 @@ class DashboardController extends AbstractController
     public function criticalZones(ZoneRepository $repo): Response
     {
         return $this->render('admin/critical_zones.html.twig', [
-            'zones' => $repo->findBy(['status' => ['orange', 'rouge']]),
+            // only zones in red status are considered critical
+            'zones' => $repo->findBy(['status' => 'rouge']),
         ]);
     }
 
-    #[Route('/telecharger/devoir', name: 'download_devoir')]
-    public function downloadDevoir(): BinaryFileResponse
+    #[Route('/carte', name: 'view_map')]
+    public function viewMap(): Response
     {
-        $path = $this->getParameter('kernel.project_dir').'/TP _ Devoir DITI4 30_01_2025.pdf';
-        return $this->file($path, 'TP_Devoir_DITI4_30_01_2025.pdf', ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        $apiKey = $this->getParameter('google_maps_api_key');
+        return $this->render('admin/view_map.html.twig', [
+            'apiKey' => $apiKey,
+        ]);
+    }
+
+    private function calculateStatus(int $population, int $symptomatic, int $positive): string
+    {
+        if ($population <= 0) {
+            return 'verte';
+        }
+
+        $rate = $positive / $population * 100;
+
+        if ($rate >= 15) {
+            return 'rouge';
+        }
+
+        if ($rate >= 5) {
+            return 'orange';
+        }
+
+        return 'verte';
     }
 }
