@@ -6,6 +6,7 @@
     <style>
         #map { height: 500px; }
     </style>
+
 {% endblock %}
 
 {% block content %}
@@ -36,12 +37,14 @@
             'sedhiou': [12.8, -15.5],
             'kolda': [12.9, -14.6],
             'ziguinchor': [12.7, -16.2],
+
         };
 
         function normalizeName(name) {
             return name.toLowerCase()
                 .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
                 .replace(/[^a-z0-9]+/g, '-');
+
         }
 
         function statusColor(status) {
@@ -111,6 +114,7 @@
             'oussouye': [12.48, -16.3]
         };
 
+
         function initMap() {
             const center = {lat: 14.5, lng: -14.5};
             const map = new google.maps.Map(document.getElementById('map'), {
@@ -148,6 +152,7 @@
                     title: p.name + ' (' + p.zone + ')'
                 });
             });
+
         }
     </script>
 {% endblock %}

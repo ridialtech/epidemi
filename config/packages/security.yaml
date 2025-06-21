@@ -7,6 +7,7 @@ security:
         users_in_memory:
             memory:
                 users:
+
                     admin@gmail.com:
                         password: '$2b$12$/UzoPDE0Aoiz4HIUIPZsZu7KxVs3DCwpb.PQp9hTvCFmrM4LY4CBu'
                         roles: ['ROLE_ADMIN', 'ROLE_USER']
