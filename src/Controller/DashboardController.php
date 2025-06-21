@@ -137,6 +137,7 @@ class DashboardController extends AbstractController
         return $this->render('admin/view_map.html.twig', [
             'apiKey' => $apiKey,
         ]);
+
     }
 
     private function calculateStatus(int $population, int $symptomatic, int $positive): string
