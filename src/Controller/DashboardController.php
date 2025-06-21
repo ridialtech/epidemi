@@ -272,6 +272,10 @@ class DashboardController extends AbstractController
             $zones[] = [
                 'name' => $zone->getName(),
                 'status' => $zone->getStatus(),
+                'population' => $zone->getPopulation(),
+                'symptomatic' => $zone->getSymptomatic(),
+                'positive' => $zone->getPositive(),
+
             ];
         }
 

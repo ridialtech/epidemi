@@ -122,11 +122,15 @@
                 center: center
             });
 
+            const zoneInfo = new google.maps.InfoWindow();
+
+
             zoneData.forEach(function(z) {
                 const key = normalizeName(z.name);
                 const center = regionCenters[key];
                 if (!center) return;
-                new google.maps.Circle({
+                const circle = new google.maps.Circle({
+
                     strokeColor: statusColor(z.status),
                     strokeOpacity: 0.8,
                     strokeWeight: 2,
@@ -136,7 +140,23 @@
                     center: {lat: center[0], lng: center[1]},
                     radius: 50000
                 });
+
+                circle.addListener('mouseover', function(ev) {
+                    const html = '<strong>' + z.name + '</strong><br>' +
+                        'Habitants: ' + z.population + '<br>' +
+                        'Symptomatiques: ' + z.symptomatic + '<br>' +
+                        'Confirmés: ' + z.positive;
+                    zoneInfo.setContent(html);
+                    zoneInfo.setPosition(ev.latLng);
+                    zoneInfo.open(map);
+                });
+                circle.addListener('mouseout', function() {
+                    zoneInfo.close();
+                });
             });
+
+            const pointInfo = new google.maps.InfoWindow();
+
 
             pointData.forEach(function(p) {
                 const key = normalizeName(p.name);
@@ -146,10 +166,19 @@
                     coord = departmentCoords[normalizeName(p.zone + '-' + key)];
                 }
                 if (!coord) return;
-                new google.maps.Marker({
+                const marker = new google.maps.Marker({
+
                     position: {lat: coord[0], lng: coord[1]},
                     map: map,
                     title: p.name + ' (' + p.zone + ')'
+                });
+
+                marker.addListener('mouseover', function() {
+                    pointInfo.setContent('<strong>' + p.name + '</strong><br>Zone: ' + p.zone);
+                    pointInfo.open(map, marker);
+                });
+                marker.addListener('mouseout', function() {
+                    pointInfo.close();
                 });
             });
 
