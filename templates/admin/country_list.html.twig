@@ -10,7 +10,17 @@
             <div class="card-body">
                 <ul class="list-group">
                 {% for country in countries %}
-                    <li class="list-group-item">{{ country.name }}</li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ country.name }}
+                        {% if is_granted('ROLE_AGENT') %}
+                            <span>
+                                <a href="{{ path('country_edit', {id: country.id}) }}" class="btn btn-sm btn-primary">Modifier</a>
+                                <form method="post" action="{{ path('country_delete', {id: country.id}) }}" class="d-inline" onsubmit="return confirm('Supprimer ce pays ?');">
+                                    <button class="btn btn-sm btn-danger">Supprimer</button>
+                                </form>
+                            </span>
+                        {% endif %}
+                    </li>
                 {% else %}
                     <li class="list-group-item">Aucun pays</li>
                 {% endfor %}

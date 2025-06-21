@@ -1,0 +1,178 @@
+{% extends 'admin/base.html.twig' %}
+{% block title %}Carte du Sénégal{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        #map { height: 500px; }
+    </style>
+{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4 text-gray-800">Carte du Sénégal</h1>
+<div id="map" style="height: 500px;"></div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ apiKey }}&callback=initMap" async defer></script>
+    <script>
+        const zoneData = {{ zones|json_encode|raw }};
+        const pointData = {{ points|json_encode|raw }};
+
+        // approximate center coordinates for the 14 regions of Senegal
+        const regionCenters = {
+            'dakar': [14.75, -17.45],
+            'thies': [14.9, -16.9],
+            'diourbel': [14.75, -15.8],
+            'fatick': [14.3, -16.3],
+            'kaolack': [14.1, -15.9],
+            'kaffrine': [14.1, -14.7],
+            'louga': [15.6, -16.2],
+            'saint-louis': [16.1, -16.1],
+            'matam': [15.2, -13.6],
+            'tambacounda': [13.8, -13.7],
+            'kedougou': [12.7, -12.5],
+            'sedhiou': [12.8, -15.5],
+            'kolda': [12.9, -14.6],
+            'ziguinchor': [12.7, -16.2],
+        };
+
+        function normalizeName(name) {
+            return name.toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9]+/g, '-');
+        }
+
+        function statusColor(status) {
+            if (status === 'rouge') return '#dc3545';
+            if (status === 'orange') return '#ffc107';
+            return '#28a745';
+        }
+
+        const departmentCoords = {
+            'dakar': [14.75, -17.45],
+            'pikine': [14.76, -17.35],
+            'guediawaye': [14.81, -17.4],
+            'rufisque': [14.78, -17.25],
+
+            'thies': [14.9, -16.9],
+            'mbour': [14.82, -16.97],
+            'tivaouane': [15.25, -16.76],
+
+            'diourbel': [14.65, -15.9],
+            'bambey': [14.8, -15.8],
+            'mbacke': [14.9, -15.7],
+
+            'fatick': [14.35, -16.45],
+            'foundiougne': [14.2, -16.3],
+            'gossas': [14.5, -16.1],
+
+            'kaolack': [14.1, -16.05],
+            'guinguineo': [14.15, -15.5],
+            'nioro-du-rip': [13.9, -15.8],
+
+            'kaffrine': [14.1, -15.1],
+            'birkelane': [13.9, -15.25],
+            'koungheul': [13.98, -14.9],
+            'malem-hodar': [14.3, -14.5],
+
+            'louga': [15.6, -16.1],
+            'kebemer': [15.3, -16.6],
+            'linguere': [15.45, -15.5],
+
+            'saint-louis': [16.05, -16.5],
+            'dagana': [16.2, -16.3],
+            'podor': [16.65, -15.5],
+
+            'matam': [15.65, -13.3],
+            'kanel': [15.0, -13.3],
+            'ranerou-ferlo': [15.1, -13.6],
+
+            'tambacounda': [13.8, -13.7],
+            'bakel': [14.8, -12.8],
+            'goudiry': [14.3, -12.6],
+            'koumpentoum': [14.1, -13.0],
+
+            'kedougou': [12.55, -12.18],
+            'salemata': [12.87, -12.7],
+            'saraya': [12.52, -11.9],
+
+            'kolda': [12.88, -14.95],
+            'velingara': [13.1, -14.11],
+            'medina-yoro-foula': [13.0, -13.7],
+
+            'sedhiou': [12.7, -15.55],
+            'bounkiling': [12.78, -15.25],
+            'goudomp': [12.55, -15.0],
+
+            'ziguinchor': [12.55, -16.27],
+            'bignona': [12.8, -16.09],
+            'oussouye': [12.48, -16.3]
+        };
+
+        function initMap() {
+            const center = {lat: 14.5, lng: -14.5};
+            const map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 6,
+                center: center
+            });
+
+            const zoneInfo = new google.maps.InfoWindow();
+
+            zoneData.forEach(function(z) {
+                const key = normalizeName(z.name);
+                const center = regionCenters[key];
+                if (!center) return;
+                const circle = new google.maps.Circle({
+                    strokeColor: statusColor(z.status),
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: statusColor(z.status),
+                    fillOpacity: 0.35,
+                    map: map,
+                    center: {lat: center[0], lng: center[1]},
+                    radius: 50000
+                });
+
+                circle.addListener('mouseover', function(ev) {
+                    const html = '<strong>' + z.name + '</strong><br>' +
+                        'Habitants: ' + z.population + '<br>' +
+                        'Symptomatiques: ' + z.symptomatic + '<br>' +
+                        'Confirmés: ' + z.positive;
+                    zoneInfo.setContent(html);
+                    zoneInfo.setPosition(ev.latLng);
+                    zoneInfo.open(map);
+                });
+                circle.addListener('mouseout', function() {
+                    zoneInfo.close();
+                });
+            });
+
+            const pointInfo = new google.maps.InfoWindow();
+
+            pointData.forEach(function(p) {
+                const key = normalizeName(p.name);
+                let coord = departmentCoords[key];
+                if (!coord) {
+                    // sometimes names use spaces or accents, try zone association
+                    coord = departmentCoords[normalizeName(p.zone + '-' + key)];
+                }
+                if (!coord) return;
+                const marker = new google.maps.Marker({
+                    position: {lat: coord[0], lng: coord[1]},
+                    map: map,
+                    title: p.name + ' (' + p.zone + ')'
+                });
+
+                marker.addListener('mouseover', function() {
+                    pointInfo.setContent('<strong>' + p.name + '</strong><br>Zone: ' + p.zone);
+                    pointInfo.open(map, marker);
+                });
+                marker.addListener('mouseout', function() {
+                    pointInfo.close();
+                });
+            });
+        }
+    </script>
+{% endblock %}
