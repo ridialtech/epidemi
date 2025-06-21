@@ -131,7 +131,8 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/carte', name: 'view_map')]
-    public function viewMap(ZoneRepository $repo): Response
+    public function viewMap(ZoneRepository $repo, SurveillancePointRepository $points): Response
+
     {
         $apiKey = $this->getParameter('google_maps_api_key');
 
@@ -143,11 +144,19 @@ class DashboardController extends AbstractController
             ];
         }
 
+        $pts = [];
+        foreach ($points->findAll() as $point) {
+            $pts[] = [
+                'name' => $point->getName(),
+                'zone' => $point->getZone()->getName(),
+            ];
+        }
+
         return $this->render('admin/view_map.html.twig', [
             'apiKey' => $apiKey,
             'zones' => $zones,
+            'points' => $pts,
         ]);
-
 
     }
 
