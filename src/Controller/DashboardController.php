@@ -275,6 +275,7 @@ class DashboardController extends AbstractController
                 'population' => $zone->getPopulation(),
                 'symptomatic' => $zone->getSymptomatic(),
                 'positive' => $zone->getPositive(),
+
             ];
         }
 
