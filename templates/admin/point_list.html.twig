@@ -14,6 +14,7 @@
                             <tr>
                                 <th>Nom</th>
                                 <th>Zone</th>
+                                {% if is_granted('ROLE_AGENT') %}<th>Actions</th>{% endif %}
                             </tr>
                         </thead>
                         <tbody>
@@ -21,10 +22,18 @@
                                 <tr>
                                     <td>{{ point.name }}</td>
                                     <td>{{ point.zone.name }}</td>
+                                    {% if is_granted('ROLE_AGENT') %}
+                                        <td>
+                                            <a href="{{ path('point_edit', {id: point.id}) }}" class="btn btn-sm btn-primary">Modifier</a>
+                                            <form method="post" action="{{ path('point_delete', {id: point.id}) }}" class="d-inline" onsubmit="return confirm('Supprimer ce point ?');">
+                                                <button class="btn btn-sm btn-danger">Supprimer</button>
+                                            </form>
+                                        </td>
+                                    {% endif %}
                                 </tr>
                             {% else %}
                                 <tr>
-                                    <td colspan="2">Aucun point enregistré</td>
+                                    <td colspan="{{ is_granted('ROLE_AGENT') ? 3 : 2 }}">Aucun point enregistré</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
