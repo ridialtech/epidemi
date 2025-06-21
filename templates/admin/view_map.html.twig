@@ -1,0 +1,29 @@
+{% extends 'admin/base.html.twig' %}
+{% block title %}Carte du Sénégal{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        #map { height: 500px; }
+    </style>
+{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4 text-gray-800">Carte du Sénégal</h1>
+<div id="map" style="height: 500px;"></div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+    <script>
+        function initMap() {
+            var senegal = {lat: 14.5, lng: -14.5};
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 6,
+                center: senegal
+            });
+            new google.maps.Marker({position: senegal, map: map});
+        }
+    </script>
+{% endblock %}
