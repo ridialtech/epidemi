@@ -7,6 +7,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SecurityController extends AbstractController
 {
+    #[Route('/', name: 'home')]
+    public function home(): \Symfony\Component\HttpFoundation\RedirectResponse
+    {
+        return $this->redirectToRoute('login');
+    }
     #[Route('/login', name: 'login')]
     public function login(): BinaryFileResponse
     {
