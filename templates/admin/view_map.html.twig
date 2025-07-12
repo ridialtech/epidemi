@@ -173,7 +173,13 @@
                 });
 
                 marker.addListener('mouseover', function() {
-                    pointInfo.setContent('<strong>' + p.name + '</strong><br>Zone: ' + p.zone);
+                    pointInfo.setContent(
+                        '<strong>' + p.name + '</strong><br>' +
+                        'Zone: ' + p.zone + '<br>' +
+                        'Habitants: ' + p.population + '<br>' +
+                        'Symptomatiques: ' + p.symptomatic + '<br>' +
+                        'Confirmés: ' + p.positive
+                    );
                     pointInfo.open(map, marker);
                 });
                 marker.addListener('mouseout', function() {
