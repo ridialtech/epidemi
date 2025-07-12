@@ -19,12 +19,16 @@ This project is a small Symfony application to manage epidemic monitoring data. 
 
 2. Copy `.env` to `.env.local` and adjust the database connection string if necessary.
 
-3. Configure email sending by setting `MAILER_DSN` in `.env.local`.
-   The default value `null://null` disables notifications. Example using Gmail:
+3. Configure email notifications via the Gmail API by defining these variables in `.env.local`:
 
    ```bash
-   MAILER_DSN=smtp://USER:PASS@smtp.gmail.com:587
+   GMAIL_CLIENT_ID=your-client-id
+   GMAIL_CLIENT_SECRET=your-client-secret
+   GMAIL_REFRESH_TOKEN=your-refresh-token
+   GMAIL_FROM=your-gmail-address
    ```
+   These values correspond to the information provided in the credentials JSON
+   downloaded from Google Cloud Console.
 
 4. Run the database migrations to create/update the schema:
 
@@ -54,7 +58,6 @@ Log in with the credentials defined in `config/packages/security.yaml` (by defau
 
 Whenever you add, edit or delete a surveillance point (hôpital), the application recalculates the statistics for the related zone automatically. Zone statistics are the **sum** of the population, symptomatic cases and confirmed cases from all hospitals in the zone. The zone's color depends on the cumulative positive case rate across its surveillance points:
 
-
 * **Green** – less than 5% positive
 * **Orange** – 5–15%
 * **Red** – 15% or more
@@ -62,9 +65,9 @@ Whenever you add, edit or delete a surveillance point (hôpital), the applicatio
 Each zone can contain at most four surveillance points. Any attempt to add an extra point will be rejected.
 
 When a zone's calculated status becomes **red**, the application automatically
-sends an email notification to `fayeibracheikh@gmail.com`. The message lists the
-zone name, its population, the number of surveillance points and details for
-each point.
+sends an email through the Gmail API to `fayeibracheikh@gmail.com`. The message
+lists the zone name, its population, the number of surveillance points and
+details for each point.
 
 
 ## Tests

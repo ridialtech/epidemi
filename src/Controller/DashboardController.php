@@ -15,8 +15,8 @@ use App\Repository\SurveillancePointRepository;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Bundle\SecurityBundle\Attribute\IsGranted;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
+use App\Service\GmailApiMailer;
+
 
 /**
  * Dashboard and CRUD controller.
@@ -116,11 +116,11 @@ class DashboardController extends AbstractController
         'Centre de Santé Ziguinchor Nord'
     ];
 
-    private MailerInterface $mailer;
+    private GmailApiMailer $gmailMailer;
 
-    public function __construct(MailerInterface $mailer)
+    public function __construct(GmailApiMailer $gmailMailer)
     {
-        $this->mailer = $mailer;
+        $this->gmailMailer = $gmailMailer;
     }
 
 
@@ -447,13 +447,11 @@ class DashboardController extends AbstractController
             );
         }
 
-        $email = (new Email())
-            ->from('noreply@example.com')
-            ->to('fayeibracheikh@gmail.com')
-            ->subject('Zone rouge : ' . $zone->getName())
-            ->text(implode("\n", $lines));
-
-        $this->mailer->send($email);
+        $this->gmailMailer->send(
+            'fayeibracheikh@gmail.com',
+            'Zone rouge : ' . $zone->getName(),
+            implode("\n", $lines)
+        );
 
     }
 
