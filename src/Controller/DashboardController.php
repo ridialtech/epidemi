@@ -28,16 +28,91 @@ class DashboardController extends AbstractController
 
     /** Example hospital names for point suggestions. */
     private const HOSPITAL_NAMES = [
+        // Dakar region
+
         'Hôpital Principal de Dakar',
         'Hôpital Fann',
         'Hôpital Aristide Le Dantec',
         'Hôpital Dalal Jamm',
-        'Hôpital de Thiès',
-        'Hôpital de Saint-Louis',
-        'Hôpital de Ziguinchor',
+
+        // Thiès region
+        'Hôpital régional de Thiès',
+        'Hôpital de Mbour',
+        'Dispensaire de Tivaouane',
+        'Centre de Santé Thiès Nord',
+
+        // Diourbel region
+        'Hôpital de Diourbel',
+        'Dispensaire de Bambey',
+        'Centre de Santé Mbacké',
+        'Centre de Santé Ndindy',
+
+        // Fatick region
+        'Hôpital de Fatick',
+        'Hôpital de Foundiougne',
+        'Dispensaire de Gossas',
+        'Centre de Santé Fatick Nord',
+
+        // Kaolack region
         'Hôpital de Kaolack',
+        'Hôpital de Nioro du Rip',
+        'Dispensaire de Guinguinéo',
+        'Centre de Santé de Kaolack',
+
+        // Kaffrine region
+        'Hôpital de Kaffrine',
+        'Dispensaire de Koungheul',
+        'Centre de Santé Birkelane',
+        'Centre de Santé Malem Hodar',
+
+        // Louga region
+        'Hôpital de Louga',
+        'Hôpital de Linguère',
+        'Dispensaire de Kébémer',
+        'Centre de Santé Louga Nord',
+
+        // Saint-Louis region
+        'Hôpital de Saint-Louis',
+        'Hôpital de Dagana',
+        'Hôpital de Podor',
+        'Dispensaire de Richard Toll',
+
+        // Matam region
+        'Hôpital de Matam',
+        'Hôpital de Kanel',
+        'Dispensaire de Ranérou',
+        'Centre de Santé Matam Ouest',
+
+        // Tambacounda region
         'Hôpital de Tambacounda',
-        'Hôpital de Louga'
+        'Hôpital de Goudiry',
+        'Dispensaire de Bakel',
+        'Centre de Santé Koumpentoum',
+
+        // Kédougou region
+        'Hôpital de Kédougou',
+        'Dispensaire de Saraya',
+        'Dispensaire de Salemata',
+        'Centre de Santé Kédougou Ouest',
+
+        // Sédhiou region
+        'Hôpital de Sédhiou',
+        'Hôpital de Bounkiling',
+        'Dispensaire de Goudomp',
+        'Centre de Santé Sédhiou Est',
+
+        // Kolda region
+        'Hôpital de Kolda',
+        'Hôpital de Vélingara',
+        'Dispensaire de Médina Yoro Foulah',
+        'Centre de Santé Kolda Sud',
+
+        // Ziguinchor region
+        'Hôpital de Ziguinchor',
+        'Hôpital de Oussouye',
+        'Dispensaire de Bignona',
+        'Centre de Santé Ziguinchor Nord'
+
     ];
 
     /** Maximum number of points allowed in a single zone. */

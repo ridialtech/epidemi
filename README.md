@@ -1,6 +1,6 @@
 # Epidemi Dashboard
 
-This project is a small Symfony application to manage epidemic monitoring data. It lets agents create countries, zones and surveillance points (which correspond to hospitals) and view their status on a map.
+This project is a small Symfony application to manage epidemic monitoring data. It lets agents create countries, zones and surveillance points (which correspond to hospitals) and view their status on a map. The interface now suggests many hospital and dispensary names – at least four for each region of Senegal – when adding a surveillance point.
 
 
 ## Requirements
