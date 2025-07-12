@@ -181,7 +181,8 @@ class DashboardController extends AbstractController
                     }
                     $point = new SurveillancePoint();
                     $point->setName($name);
-                    $point->setZone($zone);
+                    $zone->addPoint($point);
+
                     $population = (int)$request->request->get('population', 0);
                     $symptomatic = (int)$request->request->get('symptomatic', 0);
                     $positive = (int)$request->request->get('positive', 0);
@@ -217,9 +218,12 @@ class DashboardController extends AbstractController
                         $this->addFlash('error', 'Cette zone possède déjà ' . self::MAX_POINTS_PER_ZONE . ' points de surveillance.');
                         return $this->redirectToRoute('point_list');
                     }
-
                     $point->setName($name);
-                    $point->setZone($zone);
+                    if ($zone !== $oldZone) {
+                        $oldZone->removePoint($point);
+                        $zone->addPoint($point);
+                    }
+
                     $population = (int)$request->request->get('population', 0);
                     $symptomatic = (int)$request->request->get('symptomatic', 0);
                     $positive = (int)$request->request->get('positive', 0);
@@ -248,6 +252,8 @@ class DashboardController extends AbstractController
     public function deletePoint(SurveillancePoint $point, EntityManagerInterface $em): Response
     {
         $zone = $point->getZone();
+        $zone->removePoint($point);
+
         $em->remove($point);
         $this->updateZoneStats($zone);
         $em->flush();

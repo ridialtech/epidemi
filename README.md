@@ -44,8 +44,7 @@ Log in with the credentials defined in `config/packages/security.yaml` (by defau
 
 ## Updating Zone Statistics
 
-Whenever you add, edit or delete a surveillance point (hôpital), the application recalculates the statistics for the related zone automatically. The zone's color depends on the cumulative positive case rate across its surveillance points:
-
+Whenever you add, edit or delete a surveillance point (hôpital), the application recalculates the statistics for the related zone automatically. Zone statistics are the **sum** of the population, symptomatic cases and confirmed cases from all hospitals in the zone. The zone's color depends on the cumulative positive case rate across its surveillance points:
 
 
 * **Green** – less than 5% positive
