@@ -1,5 +1,5 @@
 {% extends 'admin/base.html.twig' %}
-{% block title %}Modifier un point{% endblock %}
+{% block title %}Modifier un point de surveillance{% endblock %}
 {% block content %}
 <div class="row">
     <div class="col-lg-6">
@@ -25,6 +25,20 @@
                                 <option value="{{ zone.id }}" {% if point.zone.id == zone.id %}selected{% endif %}>{{ zone.name }}</option>
                             {% endfor %}
                         </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="pointHabitants">Habitants</label>
+                            <input type="number" class="form-control" id="pointHabitants" name="population" value="{{ point.population }}">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="pointSympto">Symptomatiques</label>
+                            <input type="number" class="form-control" id="pointSympto" name="symptomatic" value="{{ point.symptomatic }}">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="pointPositifs">Cas confirmés</label>
+                            <input type="number" class="form-control" id="pointPositifs" name="positive" value="{{ point.positive }}">
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary">Enregistrer</button>
                 </form>
