@@ -30,7 +30,6 @@ final class Version20250712005341 extends AbstractMigration
                 ALTER COLUMN population SET NOT NULL,
                 ALTER COLUMN symptomatic SET NOT NULL,
                 ALTER COLUMN positive SET NOT NULL
-
         SQL);
     }
 
