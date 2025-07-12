@@ -15,6 +15,8 @@ use App\Repository\SurveillancePointRepository;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Bundle\SecurityBundle\Attribute\IsGranted;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 /**
  * Dashboard and CRUD controller.
@@ -112,8 +114,15 @@ class DashboardController extends AbstractController
         'Hôpital de Oussouye',
         'Dispensaire de Bignona',
         'Centre de Santé Ziguinchor Nord'
-
     ];
+
+    private MailerInterface $mailer;
+
+    public function __construct(MailerInterface $mailer)
+    {
+        $this->mailer = $mailer;
+    }
+
 
     /** Maximum number of points allowed in a single zone. */
     private const MAX_POINTS_PER_ZONE = 4;
@@ -401,6 +410,9 @@ class DashboardController extends AbstractController
         $symptomatic = 0;
         $positive = 0;
 
+        $previousStatus = $zone->getStatus();
+
+
         foreach ($zone->getPoints() as $p) {
             $population += $p->getPopulation() ?? 0;
             $symptomatic += $p->getSymptomatic() ?? 0;
@@ -410,7 +422,39 @@ class DashboardController extends AbstractController
         $zone->setPopulation($population);
         $zone->setSymptomatic($symptomatic);
         $zone->setPositive($positive);
-        $zone->setStatus($this->calculateStatus($population, $symptomatic, $positive));
+        $newStatus = $this->calculateStatus($population, $symptomatic, $positive);
+        $zone->setStatus($newStatus);
+
+        if ($newStatus === 'rouge' && $previousStatus !== 'rouge') {
+            $this->sendRedZoneEmail($zone);
+        }
+    }
+
+    private function sendRedZoneEmail(Zone $zone): void
+    {
+        $lines = [];
+        $lines[] = sprintf('La zone de nom %s est rouge.', $zone->getName());
+        $lines[] = sprintf('Nombre d\'habitants: %d', $zone->getPopulation());
+        $lines[] = sprintf('Nombre de points de surveillance: %d', $zone->getPoints()->count());
+        $lines[] = 'Liste des points :';
+        foreach ($zone->getPoints() as $p) {
+            $lines[] = sprintf(
+                '- %s : habitants=%d, symptomatiques=%d, confirmés=%d',
+                $p->getName(),
+                $p->getPopulation(),
+                $p->getSymptomatic(),
+                $p->getPositive()
+            );
+        }
+
+        $email = (new Email())
+            ->from('noreply@example.com')
+            ->to('fayeibracheikh@gmail.com')
+            ->subject('Zone rouge : ' . $zone->getName())
+            ->text(implode("\n", $lines));
+
+        $this->mailer->send($email);
+
     }
 
     private function calculateStatus(int $population, int $symptomatic, int $positive): string

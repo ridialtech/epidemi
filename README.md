@@ -53,6 +53,11 @@ Whenever you add, edit or delete a surveillance point (hôpital), the applicatio
 
 Each zone can contain at most four surveillance points. Any attempt to add an extra point will be rejected.
 
+When a zone's calculated status becomes **red**, the application automatically
+sends an email notification to `fayeibracheikh@gmail.com`. The message lists the
+zone name, its population, the number of surveillance points and details for
+each point.
+
 
 ## Tests
 
