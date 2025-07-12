@@ -19,7 +19,15 @@ This project is a small Symfony application to manage epidemic monitoring data. 
 
 2. Copy `.env` to `.env.local` and adjust the database connection string if necessary.
 
-3. Run the database migrations to create/update the schema:
+3. Configure email sending by setting `MAILER_DSN` in `.env.local`.
+   The default value `null://null` disables notifications. Example using Gmail:
+
+   ```bash
+   MAILER_DSN=smtp://USER:PASS@smtp.gmail.com:587
+   ```
+
+4. Run the database migrations to create/update the schema:
+
 
    ```bash
    php bin/console doctrine:migrations:migrate
@@ -27,8 +35,8 @@ This project is a small Symfony application to manage epidemic monitoring data. 
 
 The latest migration adds surveillance point statistics columns (`population`, `symptomatic`, `positive`). Run it after pulling new code so the list and map pages work correctly.
 
+5. Start the local server:
 
-4. Start the local server:
 
    ```bash
    symfony serve
