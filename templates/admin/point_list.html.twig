@@ -1,5 +1,5 @@
 {% extends 'admin/base.html.twig' %}
-{% block title %}Liste des points{% endblock %}
+{% block title %}Points de surveillance{% endblock %}
 {% block content %}
 <div class="row">
     <div class="col-lg-8">
@@ -12,8 +12,11 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Nom</th>
+                                <th>Point</th>
                                 <th>Zone</th>
+                                <th>Habitants</th>
+                                <th>Symptomatiques</th>
+                                <th>Confirmés</th>
                                 {% if is_granted('ROLE_AGENT') %}<th>Actions</th>{% endif %}
                             </tr>
                         </thead>
@@ -22,6 +25,9 @@
                                 <tr>
                                     <td>{{ point.name }}</td>
                                     <td>{{ point.zone.name }}</td>
+                                    <td>{{ point.population }}</td>
+                                    <td>{{ point.symptomatic }}</td>
+                                    <td>{{ point.positive }}</td>
                                     {% if is_granted('ROLE_AGENT') %}
                                         <td>
                                             <a href="{{ path('point_edit', {id: point.id}) }}" class="btn btn-sm btn-primary">Modifier</a>

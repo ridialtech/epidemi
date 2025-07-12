@@ -19,3 +19,9 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    App\Service\GmailApiMailer:
+        arguments:
+            $clientId: '%env(GMAIL_CLIENT_ID)%'
+            $clientSecret: '%env(GMAIL_CLIENT_SECRET)%'
+            $refreshToken: '%env(GMAIL_REFRESH_TOKEN)%'
+            $from: '%env(GMAIL_FROM)%'
