@@ -40,7 +40,6 @@ The latest migration adds surveillance point statistics columns (`population`, `
 
 5. Start the local server:
 
-
    ```bash
    symfony serve
    ```
@@ -66,7 +65,8 @@ Each zone can contain at most four surveillance points. Any attempt to add an ex
 When a zone's calculated status becomes **red**, the application automatically
 sends an email through the Gmail API to `fayeibracheikh@gmail.com`. The message
 lists the zone name, its population, the number of surveillance points and
-details for each point.
+details for each point. If the Gmail API request fails, an error is logged to
+`var/log/dev.log` (or `prod.log`) for troubleshooting.
 
 
 ## Tests
