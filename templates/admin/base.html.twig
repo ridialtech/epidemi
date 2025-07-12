@@ -57,15 +57,15 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePoint" aria-expanded="true" aria-controls="collapsePoint">
-                    <i class="fas fa-fw fa-map-marker-alt"></i>
-                    <span>Points</span>
+                    <i class="fas fa-fw fa-hospital"></i>
+                    <span>Hôpitaux</span>
                 </a>
                 <div id="collapsePoint" class="collapse" aria-labelledby="headingPoint" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         {% if is_granted('ROLE_AGENT') %}
-                            <a class="collapse-item" href="{{ path('point_new') }}">Ajout point</a>
+                            <a class="collapse-item" href="{{ path('point_new') }}">Ajout hôpital</a>
                         {% endif %}
-                        <a class="collapse-item" href="{{ path('point_list') }}">Liste points</a>
+                        <a class="collapse-item" href="{{ path('point_list') }}">Liste hôpitaux</a>
                     </div>
                 </div>
 

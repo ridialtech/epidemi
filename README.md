@@ -31,6 +31,7 @@ This project is a small Symfony application to manage epidemic monitoring data. 
 
 4. Run the database migrations to create/update the schema:
 
+
    ```bash
    php bin/console doctrine:migrations:migrate
    ```
@@ -38,6 +39,7 @@ This project is a small Symfony application to manage epidemic monitoring data. 
 The latest migration adds surveillance point statistics columns (`population`, `symptomatic`, `positive`). Run it after pulling new code so the list and map pages work correctly.
 
 5. Start the local server:
+
 
    ```bash
    symfony serve
@@ -65,6 +67,7 @@ When a zone's calculated status becomes **red**, the application automatically
 sends an email through the Gmail API to `fayeibracheikh@gmail.com`. The message
 lists the zone name, its population, the number of surveillance points and
 details for each point.
+
 
 ## Tests
 
