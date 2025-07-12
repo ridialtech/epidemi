@@ -24,7 +24,9 @@ This project is a small Symfony application to manage epidemic monitoring data. 
    php bin/console doctrine:migrations:migrate
    ```
 
-   The latest migration adds hospital statistics columns (`population`, `symptomatic`, `positive`). Run it after pulling new code so the list and map pages work correctly.
+The latest migration adds hospital statistics columns (`population`, `symptomatic`, `positive`). Run it after pulling new code so the list and map pages work correctly.
+
+
 
 4. Start the local server:
 
@@ -42,7 +44,14 @@ Log in with the credentials defined in `config/packages/security.yaml` (by defau
 
 ## Updating Zone Statistics
 
-Whenever you add, edit or delete a surveillance point, the application recalculates the statistics for the related zone automatically.
+Whenever you add, edit or delete a surveillance point (hospital), the application recalculates the statistics for the related zone automatically. The zone's color depends on the cumulative positive case rate across its hospitals:
+
+* **Green** – less than 5% positive
+* **Orange** – 5–15%
+* **Red** – 15% or more
+
+Each zone can contain at most four surveillance points. Any attempt to add an extra point will be rejected.
+
 
 ## Tests
 

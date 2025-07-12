@@ -26,23 +26,22 @@ class DashboardController extends AbstractController
         'Sénégal', 'Mali', 'Mauritanie', 'Gambie', 'Guinée',
     ];
 
-    /** Department names used for point suggestions. */
-    private const DEPARTMENT_NAMES = [
-        'Dakar', 'Pikine', 'Guédiawaye', 'Rufisque',
-        'Thiès', 'Mbour', 'Tivaouane',
-        'Diourbel', 'Bambey', 'Mbacké',
-        'Fatick', 'Foundiougne', 'Gossas',
-        'Kaolack', 'Guinguinéo', 'Nioro du Rip',
-        'Kaffrine', 'Birkilane', 'Koungheul', 'Malem Hodar',
-        'Louga', 'Kébémer', 'Linguère',
-        'Saint-Louis', 'Dagana', 'Podor',
-        'Matam', 'Kanel', 'Ranéro Ferlo',
-        'Tambacounda', 'Bakel', 'Goudiry', 'Koumpentoum',
-        'Kédougou', 'Salémata', 'Saraya',
-        'Kolda', 'Velingara', 'Médina Yoro Foulah',
-        'Sédhiou', 'Bounkiling', 'Goudomp',
-        'Ziguinchor', 'Bignona', 'Oussouye'
+    /** Example hospital names for point suggestions. */
+    private const HOSPITAL_NAMES = [
+        'Hôpital Principal de Dakar',
+        'Hôpital Fann',
+        'Hôpital Aristide Le Dantec',
+        'Hôpital Dalal Jamm',
+        'Hôpital de Thiès',
+        'Hôpital de Saint-Louis',
+        'Hôpital de Ziguinchor',
+        'Hôpital de Kaolack',
+        'Hôpital de Tambacounda',
+        'Hôpital de Louga'
     ];
+
+    /** Maximum number of points allowed in a single zone. */
+    private const MAX_POINTS_PER_ZONE = 4;
     #[Route('/dashboard', name: 'dashboard')]
 
     public function index(): Response
@@ -176,6 +175,10 @@ class DashboardController extends AbstractController
             if ($name !== '' && $zoneId) {
                 $zone = $zones->find($zoneId);
                 if ($zone) {
+                    if ($zone->getPoints()->count() >= self::MAX_POINTS_PER_ZONE) {
+                        $this->addFlash('error', 'Cette zone possède déjà ' . self::MAX_POINTS_PER_ZONE . ' points de surveillance.');
+                        return $this->redirectToRoute('point_list');
+                    }
                     $point = new SurveillancePoint();
                     $point->setName($name);
                     $point->setZone($zone);
@@ -195,7 +198,7 @@ class DashboardController extends AbstractController
 
         return $this->render('admin/point_new.html.twig', [
             'zones' => $zones->findAll(),
-            'suggestions' => self::DEPARTMENT_NAMES,
+            'suggestions' => self::HOSPITAL_NAMES,
         ]);
     }
 
@@ -210,6 +213,11 @@ class DashboardController extends AbstractController
                 $zone = $zones->find($zoneId);
                 if ($zone) {
                     $oldZone = $point->getZone();
+                    if ($zone !== $oldZone && $zone->getPoints()->count() >= self::MAX_POINTS_PER_ZONE) {
+                        $this->addFlash('error', 'Cette zone possède déjà ' . self::MAX_POINTS_PER_ZONE . ' points de surveillance.');
+                        return $this->redirectToRoute('point_list');
+                    }
+
                     $point->setName($name);
                     $point->setZone($zone);
                     $population = (int)$request->request->get('population', 0);
@@ -231,7 +239,7 @@ class DashboardController extends AbstractController
         return $this->render('admin/point_edit.html.twig', [
             'point' => $point,
             'zones' => $zones->findAll(),
-            'suggestions' => self::DEPARTMENT_NAMES,
+            'suggestions' => self::HOSPITAL_NAMES,
         ]);
     }
 
