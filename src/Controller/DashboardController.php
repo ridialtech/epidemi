@@ -26,23 +26,22 @@ class DashboardController extends AbstractController
         'Sénégal', 'Mali', 'Mauritanie', 'Gambie', 'Guinée',
     ];
 
-    /** Department names used for point suggestions. */
-    private const DEPARTMENT_NAMES = [
-        'Dakar', 'Pikine', 'Guédiawaye', 'Rufisque',
-        'Thiès', 'Mbour', 'Tivaouane',
-        'Diourbel', 'Bambey', 'Mbacké',
-        'Fatick', 'Foundiougne', 'Gossas',
-        'Kaolack', 'Guinguinéo', 'Nioro du Rip',
-        'Kaffrine', 'Birkilane', 'Koungheul', 'Malem Hodar',
-        'Louga', 'Kébémer', 'Linguère',
-        'Saint-Louis', 'Dagana', 'Podor',
-        'Matam', 'Kanel', 'Ranéro Ferlo',
-        'Tambacounda', 'Bakel', 'Goudiry', 'Koumpentoum',
-        'Kédougou', 'Salémata', 'Saraya',
-        'Kolda', 'Velingara', 'Médina Yoro Foulah',
-        'Sédhiou', 'Bounkiling', 'Goudomp',
-        'Ziguinchor', 'Bignona', 'Oussouye'
+    /** Example hospital names for point suggestions. */
+    private const HOSPITAL_NAMES = [
+        'Hôpital Principal de Dakar',
+        'Hôpital Fann',
+        'Hôpital Aristide Le Dantec',
+        'Hôpital Dalal Jamm',
+        'Hôpital de Thiès',
+        'Hôpital de Saint-Louis',
+        'Hôpital de Ziguinchor',
+        'Hôpital de Kaolack',
+        'Hôpital de Tambacounda',
+        'Hôpital de Louga'
     ];
+
+    /** Maximum number of points allowed in a single zone. */
+    private const MAX_POINTS_PER_ZONE = 4;
     #[Route('/dashboard', name: 'dashboard')]
 
     public function index(): Response
@@ -119,14 +118,8 @@ class DashboardController extends AbstractController
                     $zone = new Zone();
                     $zone->setName($name);
                     $zone->setCountry($country);
-                    $population = (int)$request->request->get('population', 0);
-                    $symptomatic = (int)$request->request->get('symptomatic', 0);
-                    $positive = (int)$request->request->get('positive', 0);
-                    $zone->setPopulation($population);
-                    $zone->setSymptomatic($symptomatic);
-                    $zone->setPositive($positive);
-                    $zone->setStatus($this->calculateStatus($population, $symptomatic, $positive));
                     $em->persist($zone);
+                    $this->updateZoneStats($zone);
                     $em->flush();
                     return $this->redirectToRoute('zone_list');
                 }
@@ -148,15 +141,9 @@ class DashboardController extends AbstractController
             if ($name !== '' && $countryId) {
                 $country = $countries->find($countryId);
                 if ($country) {
-                    $population = (int)$request->request->get('population', 0);
-                    $symptomatic = (int)$request->request->get('symptomatic', 0);
-                    $positive = (int)$request->request->get('positive', 0);
                     $zone->setName($name);
                     $zone->setCountry($country);
-                    $zone->setPopulation($population);
-                    $zone->setSymptomatic($symptomatic);
-                    $zone->setPositive($positive);
-                    $zone->setStatus($this->calculateStatus($population, $symptomatic, $positive));
+                    $this->updateZoneStats($zone);
                     $em->flush();
                     return $this->redirectToRoute('zone_list');
                 }
@@ -188,10 +175,21 @@ class DashboardController extends AbstractController
             if ($name !== '' && $zoneId) {
                 $zone = $zones->find($zoneId);
                 if ($zone) {
+                    if ($zone->getPoints()->count() >= self::MAX_POINTS_PER_ZONE) {
+                        $this->addFlash('error', 'Cette zone possède déjà ' . self::MAX_POINTS_PER_ZONE . ' points de surveillance.');
+                        return $this->redirectToRoute('point_list');
+                    }
                     $point = new SurveillancePoint();
                     $point->setName($name);
-                    $point->setZone($zone);
+                    $zone->addPoint($point);
+                    $population = (int)$request->request->get('population', 0);
+                    $symptomatic = (int)$request->request->get('symptomatic', 0);
+                    $positive = (int)$request->request->get('positive', 0);
+                    $point->setPopulation($population);
+                    $point->setSymptomatic($symptomatic);
+                    $point->setPositive($positive);
                     $em->persist($point);
+                    $this->updateZoneStats($zone);
                     $em->flush();
                     return $this->redirectToRoute('point_list');
                 }
@@ -200,7 +198,7 @@ class DashboardController extends AbstractController
 
         return $this->render('admin/point_new.html.twig', [
             'zones' => $zones->findAll(),
-            'suggestions' => self::DEPARTMENT_NAMES,
+            'suggestions' => self::HOSPITAL_NAMES,
         ]);
     }
 
@@ -214,8 +212,26 @@ class DashboardController extends AbstractController
             if ($name !== '' && $zoneId) {
                 $zone = $zones->find($zoneId);
                 if ($zone) {
+                    $oldZone = $point->getZone();
+                    if ($zone !== $oldZone && $zone->getPoints()->count() >= self::MAX_POINTS_PER_ZONE) {
+                        $this->addFlash('error', 'Cette zone possède déjà ' . self::MAX_POINTS_PER_ZONE . ' points de surveillance.');
+                        return $this->redirectToRoute('point_list');
+                    }
                     $point->setName($name);
-                    $point->setZone($zone);
+                    if ($zone !== $oldZone) {
+                        $oldZone->removePoint($point);
+                        $zone->addPoint($point);
+                    }
+                    $population = (int)$request->request->get('population', 0);
+                    $symptomatic = (int)$request->request->get('symptomatic', 0);
+                    $positive = (int)$request->request->get('positive', 0);
+                    $point->setPopulation($population);
+                    $point->setSymptomatic($symptomatic);
+                    $point->setPositive($positive);
+                    $this->updateZoneStats($oldZone);
+                    if ($oldZone !== $zone) {
+                        $this->updateZoneStats($zone);
+                    }
                     $em->flush();
                     return $this->redirectToRoute('point_list');
                 }
@@ -225,7 +241,7 @@ class DashboardController extends AbstractController
         return $this->render('admin/point_edit.html.twig', [
             'point' => $point,
             'zones' => $zones->findAll(),
-            'suggestions' => self::DEPARTMENT_NAMES,
+            'suggestions' => self::HOSPITAL_NAMES,
         ]);
     }
 
@@ -233,7 +249,10 @@ class DashboardController extends AbstractController
     #[IsGranted('ROLE_AGENT')]
     public function deletePoint(SurveillancePoint $point, EntityManagerInterface $em): Response
     {
+        $zone = $point->getZone();
+        $zone->removePoint($point);
         $em->remove($point);
+        $this->updateZoneStats($zone);
         $em->flush();
         return $this->redirectToRoute('point_list');
     }
@@ -285,6 +304,9 @@ class DashboardController extends AbstractController
             $pts[] = [
                 'name' => $point->getName(),
                 'zone' => $point->getZone()->getName(),
+                'population' => $point->getPopulation(),
+                'symptomatic' => $point->getSymptomatic(),
+                'positive' => $point->getPositive(),
             ];
         }
 
@@ -293,6 +315,24 @@ class DashboardController extends AbstractController
             'zones' => $zones,
             'points' => $pts,
         ]);
+    }
+
+    private function updateZoneStats(Zone $zone): void
+    {
+        $population = 0;
+        $symptomatic = 0;
+        $positive = 0;
+
+        foreach ($zone->getPoints() as $p) {
+            $population += $p->getPopulation() ?? 0;
+            $symptomatic += $p->getSymptomatic() ?? 0;
+            $positive += $p->getPositive() ?? 0;
+        }
+
+        $zone->setPopulation($population);
+        $zone->setSymptomatic($symptomatic);
+        $zone->setPositive($positive);
+        $zone->setStatus($this->calculateStatus($population, $symptomatic, $positive));
     }
 
     private function calculateStatus(int $population, int $symptomatic, int $positive): string
