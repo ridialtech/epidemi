@@ -19,6 +19,15 @@ class SurveillancePoint
     #[ORM\JoinColumn(nullable: false)]
     private ?Zone $zone = null;
 
+    #[ORM\Column(type: 'integer')]
+    private ?int $population = null;
+
+    #[ORM\Column(type: 'integer')]
+    private ?int $symptomatic = null;
+
+    #[ORM\Column(type: 'integer')]
+    private ?int $positive = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -43,6 +52,39 @@ class SurveillancePoint
     public function setZone(?Zone $zone): self
     {
         $this->zone = $zone;
+        return $this;
+    }
+
+    public function getPopulation(): ?int
+    {
+        return $this->population;
+    }
+
+    public function setPopulation(int $population): self
+    {
+        $this->population = $population;
+        return $this;
+    }
+
+    public function getSymptomatic(): ?int
+    {
+        return $this->symptomatic;
+    }
+
+    public function setSymptomatic(int $symptomatic): self
+    {
+        $this->symptomatic = $symptomatic;
+        return $this;
+    }
+
+    public function getPositive(): ?int
+    {
+        return $this->positive;
+    }
+
+    public function setPositive(int $positive): self
+    {
+        $this->positive = $positive;
         return $this;
     }
 }
