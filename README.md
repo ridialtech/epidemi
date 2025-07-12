@@ -31,6 +31,7 @@ This project is a small Symfony application to manage epidemic monitoring data. 
 
 4. Run the database migrations to create/update the schema:
 
+
    ```bash
    php bin/console doctrine:migrations:migrate
    ```
@@ -66,6 +67,7 @@ sends an email through the Gmail API to `fayeibracheikh@gmail.com`. The message
 lists the zone name, its population, the number of surveillance points and
 details for each point. If the Gmail API request fails, an error is logged to
 `var/log/dev.log` (or `prod.log`) for troubleshooting.
+
 
 ## Tests
 

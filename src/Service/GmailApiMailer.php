@@ -4,10 +4,12 @@ namespace App\Service;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Psr\Log\LoggerInterface;
 
+
 class GmailApiMailer
 {
     private HttpClientInterface $client;
     private LoggerInterface $logger;
+
     private string $clientId;
     private string $clientSecret;
     private string $refreshToken;
@@ -17,6 +19,7 @@ class GmailApiMailer
     {
         $this->client = $client;
         $this->logger = $logger;
+
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
         $this->refreshToken = $refreshToken;
@@ -50,6 +53,7 @@ class GmailApiMailer
             $this->logger->error('Error requesting Gmail token', ['exception' => $e]);
             return null;
         }
+
     }
 
     public function send(string $to, string $subject, string $text): void
@@ -57,6 +61,7 @@ class GmailApiMailer
         $token = $this->getAccessToken();
         if (!$token) {
             $this->logger->error('No Gmail access token available');
+
             return;
         }
         $raw = sprintf("From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n%s", $this->from, $to, $subject, $text);
@@ -79,5 +84,6 @@ class GmailApiMailer
         } catch (\Throwable $e) {
             $this->logger->error('Error sending Gmail message', ['exception' => $e]);
         }
+=
     }
 }

@@ -5,12 +5,12 @@
     <div class="col-lg-6">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Modifier un point de surveillance</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Modifier un hôpital</h6>
             </div>
             <div class="card-body">
                 <form method="post" action="{{ path('point_edit', {id: point.id}) }}">
                     <div class="form-group">
-                        <label for="psNom">Nom du point</label>
+                        <label for="psNom">Nom de l'hôpital</label>
                         <input type="text" class="form-control" id="psNom" name="name" value="{{ point.name }}" list="point-list">
                         <datalist id="point-list">
                             {% for option in suggestions %}
