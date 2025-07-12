@@ -2,6 +2,7 @@
 
 This project is a small Symfony application to manage epidemic monitoring data. It lets agents create countries, zones and surveillance points (which correspond to hospitals) and view their status on a map.
 
+
 ## Requirements
 
 - PHP 8.2 or higher
@@ -26,6 +27,7 @@ This project is a small Symfony application to manage epidemic monitoring data. 
 
 The latest migration adds surveillance point statistics columns (`population`, `symptomatic`, `positive`). Run it after pulling new code so the list and map pages work correctly.
 
+
 4. Start the local server:
 
    ```bash
@@ -44,11 +46,13 @@ Log in with the credentials defined in `config/packages/security.yaml` (by defau
 
 Whenever you add, edit or delete a surveillance point (hôpital), the application recalculates the statistics for the related zone automatically. Zone statistics are the **sum** of the population, symptomatic cases and confirmed cases from all hospitals in the zone. The zone's color depends on the cumulative positive case rate across its surveillance points:
 
+
 * **Green** – less than 5% positive
 * **Orange** – 5–15%
 * **Red** – 15% or more
 
 Each zone can contain at most four surveillance points. Any attempt to add an extra point will be rejected.
+
 
 ## Tests
 
