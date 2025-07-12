@@ -1,6 +1,7 @@
 # Epidemi Dashboard
 
-This project is a small Symfony application to manage epidemic monitoring data. It lets agents create countries, zones and surveillance points (hospitals) and view their status on a map.
+This project is a small Symfony application to manage epidemic monitoring data. It lets agents create countries, zones and surveillance points (which correspond to hospitals) and view their status on a map.
+
 
 ## Requirements
 
@@ -24,8 +25,7 @@ This project is a small Symfony application to manage epidemic monitoring data. 
    php bin/console doctrine:migrations:migrate
    ```
 
-The latest migration adds hospital statistics columns (`population`, `symptomatic`, `positive`). Run it after pulling new code so the list and map pages work correctly.
-
+The latest migration adds surveillance point statistics columns (`population`, `symptomatic`, `positive`). Run it after pulling new code so the list and map pages work correctly.
 
 
 4. Start the local server:
@@ -44,7 +44,9 @@ Log in with the credentials defined in `config/packages/security.yaml` (by defau
 
 ## Updating Zone Statistics
 
-Whenever you add, edit or delete a surveillance point (hospital), the application recalculates the statistics for the related zone automatically. The zone's color depends on the cumulative positive case rate across its hospitals:
+Whenever you add, edit or delete a surveillance point (hôpital), the application recalculates the statistics for the related zone automatically. The zone's color depends on the cumulative positive case rate across its surveillance points:
+
+
 
 * **Green** – less than 5% positive
 * **Orange** – 5–15%
