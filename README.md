@@ -26,6 +26,8 @@ This project is a small Symfony application to manage epidemic monitoring data. 
 
 The latest migration adds hospital statistics columns (`population`, `symptomatic`, `positive`). Run it after pulling new code so the list and map pages work correctly.
 
+
+
 4. Start the local server:
 
    ```bash
@@ -49,6 +51,7 @@ Whenever you add, edit or delete a surveillance point (hospital), the applicatio
 * **Red** – 15% or more
 
 Each zone can contain at most four surveillance points. Any attempt to add an extra point will be rejected.
+
 
 ## Tests
 

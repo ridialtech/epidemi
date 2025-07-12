@@ -217,6 +217,7 @@ class DashboardController extends AbstractController
                         $this->addFlash('error', 'Cette zone possède déjà ' . self::MAX_POINTS_PER_ZONE . ' points de surveillance.');
                         return $this->redirectToRoute('point_list');
                     }
+
                     $point->setName($name);
                     $point->setZone($zone);
                     $population = (int)$request->request->get('population', 0);
