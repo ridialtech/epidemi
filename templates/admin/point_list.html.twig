@@ -1,11 +1,12 @@
 {% extends 'admin/base.html.twig' %}
 {% block title %}Points de surveillance{% endblock %}
+
 {% block content %}
 <div class="row">
     <div class="col-lg-8">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Points de surveillance</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Hôpitaux</h6>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -14,7 +15,7 @@
                             <tr>
                                 <th>Point</th>
                                 <th>Zone</th>
-                                <th>Habitants</th>
+                  <th>Habitants</th>
                                 <th>Symptomatiques</th>
                                 <th>Confirmés</th>
                                 {% if is_granted('ROLE_AGENT') %}<th>Actions</th>{% endif %}
