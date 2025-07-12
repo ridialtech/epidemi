@@ -29,6 +29,7 @@ class DashboardController extends AbstractController
     /** Example hospital names for point suggestions. */
     private const HOSPITAL_NAMES = [
         // Dakar region
+
         'Hôpital Principal de Dakar',
         'Hôpital Fann',
         'Hôpital Aristide Le Dantec',
@@ -111,6 +112,7 @@ class DashboardController extends AbstractController
         'Hôpital de Oussouye',
         'Dispensaire de Bignona',
         'Centre de Santé Ziguinchor Nord'
+
     ];
 
     /** Maximum number of points allowed in a single zone. */
@@ -255,6 +257,7 @@ class DashboardController extends AbstractController
                     $point = new SurveillancePoint();
                     $point->setName($name);
                     $zone->addPoint($point);
+
                     $population = (int)$request->request->get('population', 0);
                     $symptomatic = (int)$request->request->get('symptomatic', 0);
                     $positive = (int)$request->request->get('positive', 0);
@@ -295,6 +298,7 @@ class DashboardController extends AbstractController
                         $oldZone->removePoint($point);
                         $zone->addPoint($point);
                     }
+
                     $population = (int)$request->request->get('population', 0);
                     $symptomatic = (int)$request->request->get('symptomatic', 0);
                     $positive = (int)$request->request->get('positive', 0);
@@ -324,6 +328,7 @@ class DashboardController extends AbstractController
     {
         $zone = $point->getZone();
         $zone->removePoint($point);
+
         $em->remove($point);
         $this->updateZoneStats($zone);
         $em->flush();
