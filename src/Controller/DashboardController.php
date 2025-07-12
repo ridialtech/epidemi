@@ -17,7 +17,6 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Bundle\SecurityBundle\Attribute\IsGranted;
 use App\Service\GmailApiMailer;
 
-
 /**
  * Dashboard and CRUD controller.
  */
