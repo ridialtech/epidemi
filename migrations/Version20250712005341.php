@@ -18,9 +18,19 @@ final class Version20250712005341 extends AbstractMigration
     {
         $this->addSql(<<<'SQL'
             ALTER TABLE surveillance_point
-                ADD population INT NOT NULL DEFAULT 0,
-                ADD symptomatic INT NOT NULL DEFAULT 0,
-                ADD positive INT NOT NULL DEFAULT 0
+                ADD population INT DEFAULT 0,
+                ADD symptomatic INT DEFAULT 0,
+                ADD positive INT DEFAULT 0
+        SQL);
+        $this->addSql("UPDATE surveillance_point SET population = 0 WHERE population IS NULL");
+        $this->addSql("UPDATE surveillance_point SET symptomatic = 0 WHERE symptomatic IS NULL");
+        $this->addSql("UPDATE surveillance_point SET positive = 0 WHERE positive IS NULL");
+        $this->addSql(<<<'SQL'
+            ALTER TABLE surveillance_point
+                ALTER COLUMN population SET NOT NULL,
+                ALTER COLUMN symptomatic SET NOT NULL,
+                ALTER COLUMN positive SET NOT NULL
+
         SQL);
     }
 
