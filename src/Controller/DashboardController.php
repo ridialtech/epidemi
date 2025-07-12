@@ -119,14 +119,8 @@ class DashboardController extends AbstractController
                     $zone = new Zone();
                     $zone->setName($name);
                     $zone->setCountry($country);
-                    $population = (int)$request->request->get('population', 0);
-                    $symptomatic = (int)$request->request->get('symptomatic', 0);
-                    $positive = (int)$request->request->get('positive', 0);
-                    $zone->setPopulation($population);
-                    $zone->setSymptomatic($symptomatic);
-                    $zone->setPositive($positive);
-                    $zone->setStatus($this->calculateStatus($population, $symptomatic, $positive));
                     $em->persist($zone);
+                    $this->updateZoneStats($zone);
                     $em->flush();
                     return $this->redirectToRoute('zone_list');
                 }
@@ -148,15 +142,9 @@ class DashboardController extends AbstractController
             if ($name !== '' && $countryId) {
                 $country = $countries->find($countryId);
                 if ($country) {
-                    $population = (int)$request->request->get('population', 0);
-                    $symptomatic = (int)$request->request->get('symptomatic', 0);
-                    $positive = (int)$request->request->get('positive', 0);
                     $zone->setName($name);
                     $zone->setCountry($country);
-                    $zone->setPopulation($population);
-                    $zone->setSymptomatic($symptomatic);
-                    $zone->setPositive($positive);
-                    $zone->setStatus($this->calculateStatus($population, $symptomatic, $positive));
+                    $this->updateZoneStats($zone);
                     $em->flush();
                     return $this->redirectToRoute('zone_list');
                 }
@@ -191,7 +179,14 @@ class DashboardController extends AbstractController
                     $point = new SurveillancePoint();
                     $point->setName($name);
                     $point->setZone($zone);
+                    $population = (int)$request->request->get('population', 0);
+                    $symptomatic = (int)$request->request->get('symptomatic', 0);
+                    $positive = (int)$request->request->get('positive', 0);
+                    $point->setPopulation($population);
+                    $point->setSymptomatic($symptomatic);
+                    $point->setPositive($positive);
                     $em->persist($point);
+                    $this->updateZoneStats($zone);
                     $em->flush();
                     return $this->redirectToRoute('point_list');
                 }
@@ -214,8 +209,19 @@ class DashboardController extends AbstractController
             if ($name !== '' && $zoneId) {
                 $zone = $zones->find($zoneId);
                 if ($zone) {
+                    $oldZone = $point->getZone();
                     $point->setName($name);
                     $point->setZone($zone);
+                    $population = (int)$request->request->get('population', 0);
+                    $symptomatic = (int)$request->request->get('symptomatic', 0);
+                    $positive = (int)$request->request->get('positive', 0);
+                    $point->setPopulation($population);
+                    $point->setSymptomatic($symptomatic);
+                    $point->setPositive($positive);
+                    $this->updateZoneStats($oldZone);
+                    if ($oldZone !== $zone) {
+                        $this->updateZoneStats($zone);
+                    }
                     $em->flush();
                     return $this->redirectToRoute('point_list');
                 }
@@ -233,7 +239,9 @@ class DashboardController extends AbstractController
     #[IsGranted('ROLE_AGENT')]
     public function deletePoint(SurveillancePoint $point, EntityManagerInterface $em): Response
     {
+        $zone = $point->getZone();
         $em->remove($point);
+        $this->updateZoneStats($zone);
         $em->flush();
         return $this->redirectToRoute('point_list');
     }
@@ -285,6 +293,9 @@ class DashboardController extends AbstractController
             $pts[] = [
                 'name' => $point->getName(),
                 'zone' => $point->getZone()->getName(),
+                'population' => $point->getPopulation(),
+                'symptomatic' => $point->getSymptomatic(),
+                'positive' => $point->getPositive(),
             ];
         }
 
@@ -293,6 +304,24 @@ class DashboardController extends AbstractController
             'zones' => $zones,
             'points' => $pts,
         ]);
+    }
+
+    private function updateZoneStats(Zone $zone): void
+    {
+        $population = 0;
+        $symptomatic = 0;
+        $positive = 0;
+
+        foreach ($zone->getPoints() as $p) {
+            $population += $p->getPopulation() ?? 0;
+            $symptomatic += $p->getSymptomatic() ?? 0;
+            $positive += $p->getPositive() ?? 0;
+        }
+
+        $zone->setPopulation($population);
+        $zone->setSymptomatic($symptomatic);
+        $zone->setPositive($positive);
+        $zone->setStatus($this->calculateStatus($population, $symptomatic, $positive));
     }
 
     private function calculateStatus(int $population, int $symptomatic, int $positive): string
